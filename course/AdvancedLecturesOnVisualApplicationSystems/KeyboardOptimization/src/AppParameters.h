@@ -5,8 +5,8 @@
 #include "ofMain.h"
 
 namespace param {
-	static constexpr int W = 1600;
-	static constexpr int H = 900;
+	constexpr int W = 1280;
+	constexpr int H = 720;
 }
 
 #endif

@@ -6,11 +6,19 @@
 
 class KeyItem {
 private:
-	ofRectangle rect;
 	ofTexture texture;
+	int state;
 public:
+	ofRectangle rect;
+	int type_count;
+	const enum class STATE {
+		NO_PRESSED, PRESSED
+	};
+
+	KeyItem();
 	void setup(const ofRectangle &rect, const string& texture_path);
 	void draw() const;
+	void set_state(const int& state);
 };
 
 #endif

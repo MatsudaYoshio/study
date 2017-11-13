@@ -16,12 +16,12 @@ void OptimizationApp::draw() {
 
 void OptimizationApp::mousePressed(int x, int y, int button) {
 	if (this->b.rect.inside(x, y)) {
-		this->b.set_state(true);
+		this->b.set_state(static_cast<int>(Button::STATE::PRESSED));
 	}	
 }
 
 void OptimizationApp::mouseReleased(int x, int y, int button) {
-	this->b.set_state(false);
+	this->b.set_state(static_cast<int>(Button::STATE::NO_PRESSED));
 	if (this->b.rect.inside(x, y)) {
 		ofNotifyEvent(this->exchange_event);
 	}

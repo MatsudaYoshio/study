@@ -17,7 +17,11 @@ private:
 	static constexpr int tl_x = param::W*0.15, tl_y = param::H*0.3;
 
 	array<KeyItem, key_num> keyboard;
+	array<double, key_num> nearest_key_distance;
 	unordered_map<char, int> key_index_table;
+	unordered_map<string, set<int>> home_position_group;
+
+	const double euclid_distance(const ofPoint &p1, const ofPoint &p2) const;
 public:
 	shared_ptr<OptimizationApp> opt;
 

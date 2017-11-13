@@ -4,6 +4,10 @@ using namespace param;
 
 const string KeyboardApp::dir_path = "D:/of_v0.9.2_vs_release/apps/myApps/KeyboardOptimization/texture/";
 
+const double KeyboardApp::euclid_distance(const ofPoint &p1, const ofPoint &p2) const {
+	return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
+}
+
 void KeyboardApp::setup() {
 	ofSetBackgroundAuto(true);
 
@@ -72,6 +76,36 @@ void KeyboardApp::setup() {
 	this->key_index_table.emplace(make_pair('\\', 47));
 
 	ofAddListener(this->opt->exchange_event, this, &KeyboardApp::exchange);
+
+	this->home_position_group.reserve(this->key_num);
+	this->home_position_group.emplace(make_pair("llf", set<int>{ 0, 13, 25, 37 }));
+	this->home_position_group.emplace(make_pair("lrf", set<int>{ 1, 14, 26, 38 }));
+	this->home_position_group.emplace(make_pair("lmf", set<int>{ 2, 15, 27, 39 }));
+	this->home_position_group.emplace(make_pair("lif", set<int>{ 3, 16, 28, 40, 4, 17, 29, 41 }));
+	this->home_position_group.emplace(make_pair("rif", set<int>{ 5, 18, 30, 42, 6, 19, 31, 43 }));
+	this->home_position_group.emplace(make_pair("rmf", set<int>{ 7, 20, 32, 44 }));
+	this->home_position_group.emplace(make_pair("rrf", set<int>{ 8, 21, 33, 45 }));
+	this->home_position_group.emplace(make_pair("rlf", set<int>{ 9, 22, 34, 46, 10, 23, 35, 47, 11, 24, 36, 12 }));
+
+	fill(begin(this->nearest_key_distance), end(this->nearest_key_distance), DBL_MAX);
+	double d;
+	for (int i = 0; i < this->key_num; ++i) {
+		for (const auto& g : this->home_position_group) {
+			if (g.second.find(i) != end(g.second)) {
+				for (const auto& k : g.second) {
+					if (i == k) {
+						continue;
+					}
+					d = this->euclid_distance(this->keyboard[i].rect.getCenter(), this->keyboard[k].rect.getCenter());
+					if (d < this->nearest_key_distance[i]) {
+						this->nearest_key_distance[i] = d;
+					}
+				}
+				break;
+			}
+		}
+	}
+
 }
 
 void KeyboardApp::update() {
@@ -89,7 +123,7 @@ void KeyboardApp::draw() {
 		ofPoint& p = this->keyboard[i].rect.getCenter();
 		for (int j = 0; j < this->keyboard[i].type_count; ++j) {
 			r += 3;
-			alpha -= exp(j/3);
+			alpha -= exp(j / 3);
 			ofSetColor(ofColor::red, alpha);
 			ofDrawCircle(p, r);
 		}

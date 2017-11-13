@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button() :state(false), alpha(255) {
+Button::Button() :state(static_cast<int>(STATE::NO_PRESSED)), alpha(255) {
 	font.loadFont("arial.ttf", 20);
 }
 
@@ -20,6 +20,6 @@ void Button::draw() {
 	this->font.drawString(this->text, this->rect.getX() + 10, this->rect.getY() + 30);
 }
 
-void Button::set_state(const bool& state) {
+void Button::set_state(const int& state) {
 	this->state = state;
 }

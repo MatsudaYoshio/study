@@ -8,18 +8,20 @@ class Button {
 private:
 	ofTrueTypeFont font;
 	string text;
-	bool state;
+	int state;
 	int alpha;
 public:
 	ofRectangle rect;
-
+	const enum class STATE {
+		NO_PRESSED, PRESSED
+	};
 	Button();
 
 	void setup(const ofRectangle& rect, const string& text);
 	void update();
 	void draw();
 
-	void set_state(const bool& state);
+	void set_state(const int& state);
 };
 
 #endif

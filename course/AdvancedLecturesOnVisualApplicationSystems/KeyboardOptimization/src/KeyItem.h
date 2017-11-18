@@ -6,9 +6,9 @@
 
 class KeyItem {
 private:
-	ofTexture texture;
 	int state;
 public:
+	ofTexture texture;
 	ofRectangle rect;
 	int type_count;
 	const enum class STATE {

@@ -8,6 +8,10 @@ const double KeyboardApp::euclid_distance(const ofPoint &p1, const ofPoint &p2) 
 	return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }
 
+const double KeyboardApp::evaluate_key(const int& type_count, const int& type_count_sum, const double& distance) const {
+	return type_count * distance / type_count_sum;;
+}
+
 void KeyboardApp::setup() {
 	ofSetBackgroundAuto(true);
 
@@ -76,6 +80,7 @@ void KeyboardApp::setup() {
 	this->key_index_table.emplace(make_pair('\\', 47));
 
 	ofAddListener(this->opt->exchange_event, this, &KeyboardApp::exchange);
+	ofAddListener(this->opt->start_event, this, &KeyboardApp::start);
 
 	this->home_position_group.reserve(this->key_num);
 	this->home_position_group.emplace(make_pair("llf", set<int>{ 0, 13, 25, 37 }));
@@ -105,7 +110,6 @@ void KeyboardApp::setup() {
 			}
 		}
 	}
-
 }
 
 void KeyboardApp::update() {
@@ -150,6 +154,43 @@ void KeyboardApp::keyReleased(int key) {
 	}
 }
 
+void KeyboardApp::start() {
+	this->type_count_sum = 0;
+	for (int i = 0; i < this->key_num; ++i) {
+		this->type_count_sum += this->keyboard[i].type_count;
+	}
+
+	if (this->type_count_sum == 0) {
+		puts("error : Type some keys");
+		return;
+	}
+
+	for (int i = 0; i < this->key_num; ++i) {
+		this->key_eval[i] = this->evaluate_key(this->keyboard[i].type_count, this->nearest_key_distance[i], this->type_count_sum);
+	}
+
+	this->all_eval = accumulate(begin(this->key_eval), end(this->key_eval), 0.0);
+}
+
 void KeyboardApp::exchange() {
-	cout << "exhange!!" << endl;
+	pair<int, int> exchange_pair;
+	double best_eval = DBL_MAX, eval_tmp;
+	for (int i = 0; i < this->key_num - 1; ++i) {
+		for (int j = i + 1; j < this->key_num; ++j) {
+			eval_tmp = this->evaluate_key(this->keyboard[j].type_count, this->nearest_key_distance[i], this->type_count_sum) + this->evaluate_key(this->keyboard[i].type_count, this->nearest_key_distance[j], this->type_count_sum) - this->key_eval[i] - this->key_eval[j];
+			if (eval_tmp < best_eval) {
+				best_eval = eval_tmp;
+				exchange_pair = make_pair(i, j);
+			}
+		}
+	}
+
+	swap(this->keyboard[exchange_pair.first].texture, this->keyboard[exchange_pair.second].texture);
+	swap(this->keyboard[exchange_pair.first].type_count, this->keyboard[exchange_pair.second].type_count);
+
+	for (int i = 0; i < this->key_num; ++i) {
+		this->key_eval[i] = this->evaluate_key(this->keyboard[i].type_count, this->nearest_key_distance[i], this->type_count_sum);
+	}
+
+	this->all_eval = accumulate(begin(this->key_eval), end(this->key_eval), 0.0);
 }

@@ -3,26 +3,36 @@
 void OptimizationApp::setup() {
 	ofEnableAlphaBlending();
 	ofBackground(ofColor::white);
-	this->b.setup(ofRectangle(200, 50, 140, 40), "Exchange");
+	this->start_button.setup(ofRectangle(50, 50, 140, 40), "Start");
+	this->exchange_button.setup(ofRectangle(200, 50, 140, 40), "Exchange");
 }
 
 void OptimizationApp::update() {
-	this->b.update();
+	this->start_button.update();
+	this->exchange_button.update();
 }
 
 void OptimizationApp::draw() {
-	this->b.draw();
+	this->start_button.draw();
+	this->exchange_button.draw();
 }
 
 void OptimizationApp::mousePressed(int x, int y, int button) {
-	if (this->b.rect.inside(x, y)) {
-		this->b.set_state(static_cast<int>(Button::STATE::PRESSED));
-	}	
+	if (this->exchange_button.rect.inside(x, y)) {
+		this->exchange_button.set_state(static_cast<int>(Button::STATE::PRESSED));
+	}
+	else if (this->start_button.rect.inside(x, y)) {
+		this->start_button.set_state(static_cast<int>(Button::STATE::PRESSED));
+	}
 }
 
 void OptimizationApp::mouseReleased(int x, int y, int button) {
-	this->b.set_state(static_cast<int>(Button::STATE::NO_PRESSED));
-	if (this->b.rect.inside(x, y)) {
+	this->start_button.set_state(static_cast<int>(Button::STATE::NO_PRESSED));
+	this->exchange_button.set_state(static_cast<int>(Button::STATE::NO_PRESSED));
+	if (this->exchange_button.rect.inside(x, y)) {
 		ofNotifyEvent(this->exchange_event);
+	}
+	else if (this->start_button.rect.inside(x, y)) {
+		ofNotifyEvent(this->start_event);
 	}
 }

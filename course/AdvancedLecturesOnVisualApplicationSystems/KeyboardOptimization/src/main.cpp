@@ -6,9 +6,6 @@
 using namespace param;
 
 int main(){
-	//ofSetupOpenGL(W, H, OF_WINDOW);
-	//ofRunApp(new KeyboardApp());
-
 	ofGLFWWindowSettings settings;
 
 	settings.width = W;

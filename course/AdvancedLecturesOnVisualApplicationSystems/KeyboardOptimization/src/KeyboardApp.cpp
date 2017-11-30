@@ -4,10 +4,6 @@ using namespace param;
 
 const string KeyboardApp::dir_path = "D:/of_v0.9.2_vs_release/apps/myApps/KeyboardOptimization/texture/";
 
-const double KeyboardApp::euclid_distance(const ofPoint &p1, const ofPoint &p2) const {
-	return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
-}
-
 const double KeyboardApp::evaluate_key(const int& type_count, const int& type_count_sum, const double& distance) const {
 	return type_count * distance / type_count_sum;;
 }
@@ -101,7 +97,7 @@ void KeyboardApp::setup() {
 					if (i == k) {
 						continue;
 					}
-					d = this->euclid_distance(this->keyboard[i].rect.getCenter(), this->keyboard[k].rect.getCenter());
+					d = ofDist(this->keyboard[i].rect.getCenter().x, this->keyboard[i].rect.getCenter().y, this->keyboard[k].rect.getCenter().x, this->keyboard[k].rect.getCenter().y);
 					if (d < this->nearest_key_distance[i]) {
 						this->nearest_key_distance[i] = d;
 					}
@@ -112,9 +108,7 @@ void KeyboardApp::setup() {
 	}
 }
 
-void KeyboardApp::update() {
-
-}
+void KeyboardApp::update() {}
 
 void KeyboardApp::draw() {
 	for (int i = 0; i < this->key_num; ++i) {
@@ -132,16 +126,18 @@ void KeyboardApp::draw() {
 			ofDrawCircle(p, r);
 		}
 	}
+}
 
+void KeyboardApp::exit() {
+	ofRemoveListener(this->opt->exchange_event, this, &KeyboardApp::exchange);
+	ofRemoveListener(this->opt->start_event, this, &KeyboardApp::start);
 }
 
 void KeyboardApp::keyPressed(int key) {
 	try {
 		this->keyboard[this->key_index_table.at(key)].set_state(static_cast<int>(KeyItem::STATE::PRESSED));
 	}
-	catch (std::out_of_range&) {
-
-	}
+	catch (std::out_of_range&) {}
 }
 
 void KeyboardApp::keyReleased(int key) {
@@ -149,9 +145,7 @@ void KeyboardApp::keyReleased(int key) {
 		this->keyboard[this->key_index_table.at(key)].set_state(static_cast<int>(KeyItem::STATE::NO_PRESSED));
 		++this->keyboard[this->key_index_table.at(key)].type_count;
 	}
-	catch (std::out_of_range&) {
-
-	}
+	catch (std::out_of_range&) {}
 }
 
 void KeyboardApp::start() {

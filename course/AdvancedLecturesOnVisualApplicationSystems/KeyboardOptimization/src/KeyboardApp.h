@@ -9,7 +9,7 @@
 
 class KeyboardApp : public ofBaseApp {
 private:
-	static const string dir_path;
+	static const string dir_path; // キーのテクスチャがあるディレクトリのパス
 	static constexpr int key_num = 48;
 	static constexpr int w_space = 5;
 	static constexpr int h_space = 5;
@@ -24,7 +24,6 @@ private:
 	double all_eval;
 	int type_count_sum;
 
-	const double euclid_distance(const ofPoint &p1, const ofPoint &p2) const;
 	const double evaluate_key(const int& type_count, const int& type_count_sum, const double& distance) const;
 public:
 	shared_ptr<OptimizationApp> opt;
@@ -32,6 +31,7 @@ public:
 	void setup();
 	void update();
 	void draw();
+	void exit();
 
 	void keyPressed(int key);
 	void keyReleased(int key);

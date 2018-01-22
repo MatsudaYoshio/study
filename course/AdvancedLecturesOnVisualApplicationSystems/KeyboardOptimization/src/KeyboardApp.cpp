@@ -35,48 +35,51 @@ void KeyboardApp::setup() {
 	for (int i = 1; i <= 9; ++i) {
 		this->key_index_table.emplace(make_pair('0' + i, i - 1));
 	}
-	this->key_index_table.emplace(make_pair('0', 9));
-	this->key_index_table.emplace(make_pair('-', 10));
-	this->key_index_table.emplace(make_pair('^', 11));
-	this->key_index_table.emplace(make_pair('\\', 12));
-	this->key_index_table.emplace(make_pair('q', 13));
-	this->key_index_table.emplace(make_pair('w', 14));
-	this->key_index_table.emplace(make_pair('e', 15));
-	this->key_index_table.emplace(make_pair('r', 16));
-	this->key_index_table.emplace(make_pair('t', 17));
-	this->key_index_table.emplace(make_pair('y', 18));
-	this->key_index_table.emplace(make_pair('u', 19));
-	this->key_index_table.emplace(make_pair('i', 20));
-	this->key_index_table.emplace(make_pair('o', 21));
-	this->key_index_table.emplace(make_pair('p', 22));
-	this->key_index_table.emplace(make_pair('@', 23));
-	this->key_index_table.emplace(make_pair('[', 24));
-	this->key_index_table.emplace(make_pair('a', 25));
-	this->key_index_table.emplace(make_pair('s', 26));
-	this->key_index_table.emplace(make_pair('d', 27));
-	this->key_index_table.emplace(make_pair('f', 28));
-	this->key_index_table.emplace(make_pair('g', 29));
-	this->key_index_table.emplace(make_pair('h', 30));
-	this->key_index_table.emplace(make_pair('j', 31));
-	this->key_index_table.emplace(make_pair('k', 32));
-	this->key_index_table.emplace(make_pair('l', 33));
-	this->key_index_table.emplace(make_pair(';', 34));
-	this->key_index_table.emplace(make_pair(':', 35));
-	this->key_index_table.emplace(make_pair(']', 36));
-	this->key_index_table.emplace(make_pair('z', 37));
-	this->key_index_table.emplace(make_pair('x', 38));
-	this->key_index_table.emplace(make_pair('c', 39));
-	this->key_index_table.emplace(make_pair('v', 40));
-	this->key_index_table.emplace(make_pair('b', 41));
-	this->key_index_table.emplace(make_pair('n', 42));
-	this->key_index_table.emplace(make_pair('m', 43));
-	this->key_index_table.emplace(make_pair(',', 44));
-	this->key_index_table.emplace(make_pair('.', 45));
-	this->key_index_table.emplace(make_pair('/', 46));
-	this->key_index_table.emplace(make_pair('\\', 47));
+#define ADD_KEY(key, num) this->##key_index_table.emplace(make_pair(key, num))
+	ADD_KEY('0', 9);
+	ADD_KEY('-', 10);
+	ADD_KEY('^', 11);
+	ADD_KEY('\\', 12);
+	ADD_KEY('q', 13);
+	ADD_KEY('w', 14);
+	ADD_KEY('e', 15);
+	ADD_KEY('r', 16);
+	ADD_KEY('t', 17);
+	ADD_KEY('y', 18);
+	ADD_KEY('u', 19);
+	ADD_KEY('i', 20);
+	ADD_KEY('o', 21);
+	ADD_KEY('p', 22);
+	ADD_KEY('@', 23);
+	ADD_KEY('[', 24);
+	ADD_KEY('a', 25);
+	ADD_KEY('s', 26);
+	ADD_KEY('d', 27);
+	ADD_KEY('f', 28);
+	ADD_KEY('g', 29);
+	ADD_KEY('h', 30);
+	ADD_KEY('j', 31);
+	ADD_KEY('k', 32);
+	ADD_KEY('l', 33);
+	ADD_KEY(';', 34);
+	ADD_KEY(':', 35);
+	ADD_KEY(']', 36);
+	ADD_KEY('z', 37);
+	ADD_KEY('x', 38);
+	ADD_KEY('c', 39);
+	ADD_KEY('v', 40);
+	ADD_KEY('b', 41);
+	ADD_KEY('n', 42);
+	ADD_KEY('m', 43);
+	ADD_KEY(',', 44);
+	ADD_KEY('.', 45);
+	ADD_KEY('/', 46);
+	ADD_KEY('\\', 47);
+#undef ADD_KEY
 
 	ofAddListener(this->opt->exchange_event, this, &KeyboardApp::exchange);
 	ofAddListener(this->opt->start_event, this, &KeyboardApp::start);
+	ofAddListener(this->opt->visualize_event, this, &KeyboardApp::switch_visual);
 
 	this->home_position_group.reserve(this->key_num);
 	this->home_position_group.emplace(make_pair("llf", set<int>{ 0, 13, 25, 37 }));
@@ -106,24 +109,29 @@ void KeyboardApp::setup() {
 			}
 		}
 	}
+
+	this->visualize_flag = true;
 }
 
-void KeyboardApp::update() {}
+void KeyboardApp::update() {
+}
 
 void KeyboardApp::draw() {
 	for (int i = 0; i < this->key_num; ++i) {
 		this->keyboard[i].draw();
 	}
 
-	for (int i = 0; i < this->key_num; ++i) {
-		int alpha = 150;
-		double r = 5;
-		ofPoint& p = this->keyboard[i].rect.getCenter();
-		for (int j = 0; j < this->keyboard[i].type_count; ++j) {
-			r += 3;
-			alpha -= exp(j / 3);
-			ofSetColor(ofColor::red, alpha);
-			ofDrawCircle(p, r);
+	if (this->visualize_flag) {
+		for (int i = 0; i < this->key_num; ++i) {
+			int alpha = 150;
+			double r = 5;
+			ofPoint& p = this->keyboard[i].rect.getCenter();
+			for (int j = 0; j < this->keyboard[i].type_count; ++j) {
+				r += 3;
+				alpha -= exp(j / 3);
+				ofSetColor(ofColor::red, alpha);
+				ofDrawCircle(p, r);
+			}
 		}
 	}
 }
@@ -163,7 +171,7 @@ void KeyboardApp::start() {
 		this->key_eval[i] = this->evaluate_key(this->keyboard[i].type_count, this->nearest_key_distance[i], this->type_count_sum);
 	}
 
-	this->all_eval = accumulate(begin(this->key_eval), end(this->key_eval), 0.0);
+	this->plt->plot->update(accumulate(begin(this->key_eval), end(this->key_eval), 0.0));
 }
 
 void KeyboardApp::exchange() {
@@ -186,5 +194,9 @@ void KeyboardApp::exchange() {
 		this->key_eval[i] = this->evaluate_key(this->keyboard[i].type_count, this->nearest_key_distance[i], this->type_count_sum);
 	}
 
-	this->all_eval = accumulate(begin(this->key_eval), end(this->key_eval), 0.0);
+	this->plt->plot->update(accumulate(begin(this->key_eval), end(this->key_eval), 0.0));
+}
+
+void KeyboardApp::switch_visual() {
+	this->visualize_flag = !this->visualize_flag;
 }

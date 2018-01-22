@@ -6,6 +6,8 @@
 #include "AppParameters.h"
 #include "KeyItem.h"
 #include "OptimizationApp.h"
+#include "PlotApp.h"
+#include "ofxHistoryPlot.h"
 
 class KeyboardApp : public ofBaseApp {
 private:
@@ -21,12 +23,13 @@ private:
 	unordered_map<char, int> key_index_table;
 	unordered_map<string, set<int>> home_position_group;
 	array<double, key_num> key_eval;
-	double all_eval;
 	int type_count_sum;
+	bool visualize_flag;
 
 	const double evaluate_key(const int& type_count, const int& type_count_sum, const double& distance) const;
 public:
 	shared_ptr<OptimizationApp> opt;
+	shared_ptr<PlotApp> plt;
 
 	void setup();
 	void update();
@@ -37,6 +40,7 @@ public:
 	void keyReleased(int key);
 	void start();
 	void exchange();
+	void switch_visual();
 };
 
 #endif

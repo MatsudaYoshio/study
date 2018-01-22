@@ -7,10 +7,9 @@
 
 class OptimizationApp : public ofBaseApp {
 private:
-	Button start_button, exchange_button;
+	Button reset_button, start_button, exchange_button, visualize_button;
 public:
-	ofEvent<void> exchange_event;
-	ofEvent<void> start_event;
+	ofEvent<void> reset_event, start_event, exchange_event, visualize_event;
 
 	void setup();
 	void update();

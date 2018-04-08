@@ -8,11 +8,11 @@ class UnionFind {
 private:
 	std::vector<int> data;
 public:
-	UnionFind(const int& size);
+	UnionFind(int size);
 	void union_set(int x, int y);
-	const bool is_same(const int& x, const int& y);
-	const int get_root(const int& x);
-	const int get_size(const int& x);
+	const bool is_same(int x, int y);
+	const int get_root(int x);
+	const int get_size(int x);
 };
 
 #endif

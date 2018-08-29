@@ -1,0 +1,70 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "日立システムズ",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "HiSysSummaryIntent",
+                    "slots": [
+                        {
+                            "name": "item",
+                            "type": "CompanyInformation"
+                        }
+                    ],
+                    "samples": [
+                        "{item} について知りたい",
+                        "{item} 知りたい",
+                        "{item} を知りたい",
+                        "{item} が知りたい",
+                        "{item} 教えろ",
+                        "{item} 教えて",
+                        "{item} について教えて"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "CompanyInformation",
+                    "values": [
+                        {
+                            "id": "BUSINESS",
+                            "name": {
+                                "value": "事業",
+                                "synonyms": [
+                                    "事業内容"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "EMPLOYEES",
+                            "name": {
+                                "value": "社員数",
+                                "synonyms": [
+                                    "従業員の数",
+                                    "従業員数",
+                                    "社員の数"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

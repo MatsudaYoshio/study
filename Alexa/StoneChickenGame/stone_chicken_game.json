@@ -1,0 +1,165 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "コイン取りゲーム",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "GetNumberIntent",
+                    "slots": [
+                        {
+                            "name": "number",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "{number} 枚で",
+                        "{number} 枚いただこう",
+                        "{number} 枚いただく",
+                        "{number} いただこう",
+                        "{number} いただく",
+                        "{number} で",
+                        "{number} 枚ほしい",
+                        "{number} ほしい",
+                        "{number} 取る",
+                        "{number} 枚取ります",
+                        "{number} 枚取る",
+                        "{number} 取ります",
+                        "{number} 枚",
+                        "{number} "
+                    ]
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": [
+                        "おねがい",
+                        "たのむ",
+                        "よろしく",
+                        "お願いします"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.RepeatIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StartOverIntent",
+                    "samples": []
+                },
+                {
+                    "name": "DecideFirstIntent",
+                    "slots": [
+                        {
+                            "name": "order",
+                            "type": "OrderInformation"
+                        }
+                    ],
+                    "samples": [
+                        "{order} でよろしく",
+                        "{order} でお願いします",
+                        "{order} で頼む",
+                        "{order} だ",
+                        "{order} で",
+                        "{order} がいい",
+                        "{order}"
+                    ]
+                },
+                {
+                    "name": "CheckCoinIntent",
+                    "slots": [],
+                    "samples": [
+                        "残りどのくらい",
+                        "コイン枚数はどのくらい",
+                        "コインはどのくらい",
+                        "今は何枚",
+                        "現在何枚か教えて",
+                        "今何枚か教えて",
+                        "残り何枚か教えて",
+                        "現在は何枚",
+                        "残りのコインは何枚",
+                        "現在のコインは何枚",
+                        "現在のコインの数は",
+                        "現在の数は",
+                        "現在は",
+                        "今のコインの数は",
+                        "今の数は",
+                        "残りのコインの数は",
+                        "残りの数は",
+                        "残りは",
+                        "現在のコイン枚数は",
+                        "今のコインは何枚",
+                        "現在のコインは",
+                        "残りのコイン枚数は",
+                        "残りは何枚",
+                        "残りのコインを教えて",
+                        "現在のコインを教えて",
+                        "残りのコイン",
+                        "現在のコイン"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "OrderInformation",
+                    "values": [
+                        {
+                            "id": "ANY",
+                            "name": {
+                                "value": "どちらでも",
+                                "synonyms": [
+                                    "適当",
+                                    "ランダム",
+                                    "なんでも",
+                                    "どっちでも"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "SECOND",
+                            "name": {
+                                "value": "後攻",
+                                "synonyms": [
+                                    "後手",
+                                    "後",
+                                    "次",
+                                    "二番"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "FIRST",
+                            "name": {
+                                "value": "先攻",
+                                "synonyms": [
+                                    "先手",
+                                    "一番",
+                                    "最初",
+                                    "先"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

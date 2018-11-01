@@ -4,6 +4,7 @@ import datetime
 import logging
 
 TARGET_PATH = Path.home()/"~~~"/"---"
+# Windowsだったら pathlib.WindowsPath(r"\\~~~\---\XXX") のようにする
 LOG_PATH = Path.home()/"~~~"/"---"
 
 def main():

@@ -27,8 +27,8 @@ def main():
     for folder_name, sub_folders, file_names in os.walk(TARGET_PATH):
         for file_name in file_names:
             f = os.path.join(folder_name, file_name)
-            mtime = datetime.date.fromtimestamp(int(os.path.getmtime(f)))
-            if (now - mtime).days >= 7: # ファイルの最終更新時刻が一週間前だったら
+            atime = datetime.date.fromtimestamp(int(os.path.getatime(f)))
+            if (now - atime).days >= 7: # ファイルの最終アクセス時刻が一週間前だったら
                 os.remove(f)
                 logger.info("[Delete file] {}".format(f))
 

@@ -41,7 +41,6 @@ int main()
 
   while(ub - lb > 1){
     mid = (lb + ub)/2;
-    cout << mid << endl;
     if(C(mid)) ub = mid;
     else lb = mid;
   }

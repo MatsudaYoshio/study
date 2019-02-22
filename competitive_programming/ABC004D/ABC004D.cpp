@@ -11,7 +11,6 @@ int main(){
     vector<int> cost(600, 0);
     for(int i = 1; i < 600; ++i){
         cost[i] = i+cost[i-1];
-        cout << cost[i] << endl;
     }
 
     int ans = INT_MAX;

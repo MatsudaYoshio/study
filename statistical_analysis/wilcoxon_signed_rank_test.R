@@ -6,10 +6,11 @@ library(openxlsx)
 library(stringr)
 library(exactRankTests)
 
-item.num <- 7 # €–Ú”
 file.path <- './wilcoxon_signed_rank_test_sample.xlsx'
 
 all.data <- read.xlsx(file.path, 1)
+
+item.num <- (ncol(all.data)-1)/2 # €–Ú”
 
 item.name <- str_sub(colnames(all.data[2:(2+item.num-1)]), start = 1, end = -4)
 

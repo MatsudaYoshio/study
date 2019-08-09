@@ -39,4 +39,5 @@ for(i in 1:item.num){
 
 	# 事後比較（ボンフェローニ補正によるt検定）
 	print(pairwise.t.test(data, methods, p.adjust.method="bonferroni"))
+	cat(sprintf('--------------------------------------------------\n', item.name[i]))
 }

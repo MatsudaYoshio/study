@@ -39,5 +39,5 @@ for(i in 1:item.num){
 	# ‘S‘Ì“I‚Éˆ—‚ªd‚¢
 	print(pSDCFlig(x=data, g=methods, method="Asymptotic"))
 
-	cat(sprintf('--------------------------------------------------\n', item.name[i]))
+	cat(sprintf('--------------------------------------------------\n'))
 }

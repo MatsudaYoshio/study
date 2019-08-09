@@ -27,5 +27,5 @@ for (i in 1:item.num){
 	# 各項目でウィルコクソンの符号順位検定を行う	
 	print(wilcox.exact(x=t(data1[i]), y=t(data2[i]), paired=T))
 	
-	cat(sprintf('--------------------------------------------------\n', item.name[i]))
+	cat(sprintf('--------------------------------------------------\n'))
 }

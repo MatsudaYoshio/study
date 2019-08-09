@@ -1,6 +1,6 @@
-# ANOVAiˆêŒ³”z’u•ªŽU•ªÍj{Ž–Œã”äŠriƒ{ƒ“ƒtƒFƒ[ƒj•â³‚É‚æ‚étŒŸ’èj
-# ŽOŒQˆÈãiˆê—vˆöj,‘Î‰ž‚ ‚è,ƒpƒ‰ƒƒgƒŠƒbƒN
-# —vˆöŽè–@‚Å’è—Ê•]‰¿‚Æ‚©‚ÉŽg‚¤A—á‚¦‚ÎA…€=3‚ÅŽOŽè–@
+# ANOVAï¼ˆä¸€å…ƒé…ç½®åˆ†æ•£åˆ†æžï¼‰ï¼‹äº‹å¾Œæ¯”è¼ƒï¼ˆãƒœãƒ³ãƒ•ã‚§ãƒ­ãƒ¼ãƒ‹è£œæ­£ã«ã‚ˆã‚‹tæ¤œå®šï¼‰
+# ä¸‰ç¾¤ä»¥ä¸Šï¼ˆä¸€è¦å› ï¼‰,å¯¾å¿œã‚ã‚Š,ãƒ‘ãƒ©ãƒ¡ãƒˆãƒªãƒƒã‚¯
+# è¦å› ï¼æ‰‹æ³•ã§å®šé‡è©•ä¾¡ã¨ã‹ã«ä½¿ã†ã€ä¾‹ãˆã°ã€æ°´æº–=3ã§ä¸‰æ‰‹æ³•
 
 library(openxlsx)
 library(stringr)
@@ -9,9 +9,9 @@ file.path <- './one_way_anova_bonferroni_sample.xlsx'
 
 all.data <- read.xlsx(file.path, 1)
 
-level <- 3 # …€‚Ì”iŽè–@‚Ì”j
-item.num <- (ncol(all.data)-1)/level # €–Ú”
-participant.num <- nrow(all.data[1]) # ”íŒ±ŽÒ‚Ì”
+level <- 3 # æ°´æº–ã®æ•°ï¼ˆæ‰‹æ³•ã®æ•°ï¼‰
+item.num <- (ncol(all.data)-1)/level # é …ç›®æ•°
+participant.num <- nrow(all.data[1]) # è¢«é¨“è€…ã®æ•°
 
 methods <- factor(c(rep('1', participant.num), rep('2', participant.num), rep('3', participant.num)))
 
@@ -26,19 +26,20 @@ for(i in 1:item.num){
 		data <- c(data, t(all.data[j]))
 	}
 
-	# Še€–Ú‚Ì‘S•”‚Ìƒf[ƒ^‚ðŽg‚Á‚Ä³‹K«‚ÌŒŸ’èiƒVƒƒƒsƒEƒEƒBƒ‹ƒNŒŸ’èj‚ðs‚¢A‹A–³‰¼ài•W–{•ª•z‚ª³‹K•ª•z‚É]‚¤j‚ªŠü‹p‚³‚ê‚È‚¢‚±‚Æ‚ðŠm”F
-	# ‚à‚µŠü‹p‚³‚ê‚é‚Ì‚Å‚ ‚ê‚ÎAƒmƒ“ƒpƒ‰ƒƒgƒŠƒbƒN‚ÌŽè–@‚ª‚¢‚¢‚©‚à
+	# å„é …ç›®ã®å…¨éƒ¨ã®ãƒ‡ãƒ¼ã‚¿ã‚’ä½¿ã£ã¦æ­£è¦æ€§ã®æ¤œå®šï¼ˆã‚·ãƒ£ãƒ”ãƒ­ãƒ»ã‚¦ã‚£ãƒ«ã‚¯æ¤œå®šï¼‰ã‚’è¡Œã„ã€å¸°ç„¡ä»®èª¬ï¼ˆæ¨™æœ¬åˆ†å¸ƒãŒæ­£è¦åˆ†å¸ƒã«å¾“ã†ï¼‰ãŒæ£„å´ã•ã‚Œãªã„ã“ã¨ã‚’ç¢ºèª
+	# ã‚‚ã—æ£„å´ã•ã‚Œã‚‹ã®ã§ã‚ã‚Œã°ã€ãƒŽãƒ³ãƒ‘ãƒ©ãƒ¡ãƒˆãƒªãƒƒã‚¯ã®æ‰‹æ³•ãŒã„ã„ã‹ã‚‚
 	print(shapiro.test(x=data))
 
-	# Še€–Ú‚Ì‘S•”‚Ìƒf[ƒ^‚ðŽg‚Á‚Ä“™•ªŽU«‚ÌŒŸ’èiƒo[ƒgƒŒƒbƒgŒŸ’èj‚ðs‚¢A‹A–³‰¼àiŠeŒQ‚Ì•ªŽU‚ª‹Ïˆêj‚ªŠü‹p‚³‚ê‚È‚¢‚±‚Æ‚ðŠm”F
-	# ‚à‚µŠü‹p‚³‚ê‚é‚Ì‚Å‚ ‚ê‚ÎA“™•ªŽU«‚ð‰¼’è‚µ‚È‚¢ANOVA‚©ƒmƒ“ƒpƒ‰ƒƒgƒŠƒbƒN‚ÌŽè–@‚É‚·‚é
+	# å„é …ç›®ã®å…¨éƒ¨ã®ãƒ‡ãƒ¼ã‚¿ã‚’ä½¿ã£ã¦ç­‰åˆ†æ•£æ€§ã®æ¤œå®šï¼ˆãƒãƒ¼ãƒˆãƒ¬ãƒƒãƒˆæ¤œå®šï¼‰ã‚’è¡Œã„ã€å¸°ç„¡ä»®èª¬ï¼ˆå„ç¾¤ã®åˆ†æ•£ãŒå‡ä¸€ï¼‰ãŒæ£„å´ã•ã‚Œãªã„ã“ã¨ã‚’ç¢ºèª
+	# ã‚‚ã—æ£„å´ã•ã‚Œã‚‹ã®ã§ã‚ã‚Œã°ã€ç­‰åˆ†æ•£æ€§ã‚’ä»®å®šã—ãªã„ANOVAã‹ãƒŽãƒ³ãƒ‘ãƒ©ãƒ¡ãƒˆãƒªãƒƒã‚¯ã®æ‰‹æ³•ã«ã™ã‚‹
 	print(bartlett.test(formula=data~methods))
 
 	# ANOVA
-	# print(oneway.test(data~methods, var.equal=T)) # “™•ªŽU‚Å‚È‚¢‚Æ‚«‚àŽg‚¦‚é‚â‚Âivar.equal=F‚É‚·‚ê‚Î“™•ªŽU‚Å‚È‚¢ANOVAj
-	print(summary(aov(data~methods))) # “™•ªŽU«‚ð‰¼’è‚µ‚½‚â‚Â
+	# print(oneway.test(data~methods, var.equal=T)) # ç­‰åˆ†æ•£ã§ãªã„ã¨ãã‚‚ä½¿ãˆã‚‹ã‚„ã¤ï¼ˆvar.equal=Fã«ã™ã‚Œã°ç­‰åˆ†æ•£ã§ãªã„ANOVAï¼‰
+	print(summary(aov(data~methods))) # ç­‰åˆ†æ•£æ€§ã‚’ä»®å®šã—ãŸã‚„ã¤
 
-	# Ž–Œã”äŠriƒ{ƒ“ƒtƒFƒ[ƒj•â³‚É‚æ‚étŒŸ’èj
+	# äº‹å¾Œæ¯”è¼ƒï¼ˆãƒœãƒ³ãƒ•ã‚§ãƒ­ãƒ¼ãƒ‹è£œæ­£ã«ã‚ˆã‚‹tæ¤œå®šï¼‰
 	print(pairwise.t.test(data, methods, p.adjust.method="bonferroni"))
+	
 	cat(sprintf('--------------------------------------------------\n', item.name[i]))
 }

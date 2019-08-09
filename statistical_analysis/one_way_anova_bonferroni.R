@@ -13,7 +13,12 @@ level <- 3 # 水準の数（手法の数）
 item.num <- (ncol(all.data)-1)/level # 項目数
 participant.num <- nrow(all.data[1]) # 被験者の数
 
-methods <- factor(c(rep('1', participant.num), rep('2', participant.num), rep('3', participant.num)))
+# 因子ベクトルの生成
+m <- NULL
+for(i in 1:level){
+	m <- c(m, c(rep(i, participant.num)))
+}
+methods <- factor(x, as.character(1:level))
 
 item.name <- str_sub(colnames(all.data[seq(from = 2, to = ncol(all.data), by = level)]
 ), start = 1, end = -4)

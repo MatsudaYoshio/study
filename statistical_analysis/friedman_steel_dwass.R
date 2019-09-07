@@ -19,7 +19,7 @@ m <- NULL
 for(i in 1:level){
 	m <- c(m, c(rep(i, participant.num)))
 }
-methods <- factor(x, as.character(1:level))
+methods <- factor(m, as.character(1:level))
 
 item.name <- str_sub(colnames(all.data[seq(from = 2, to = ncol(all.data), by = level)]
 ), start = 1, end = -4)

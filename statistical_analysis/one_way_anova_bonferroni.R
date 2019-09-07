@@ -12,13 +12,14 @@ all.data <- read.xlsx(file.path, 1)
 level <- 3 # 水準の数（手法の数）
 item.num <- (ncol(all.data)-1)/level # 項目数
 participant.num <- nrow(all.data[1]) # 被験者の数
+participants <- factor(c(rep(c(t(all.data[1])), level)))
 
 # 因子ベクトルの生成
 m <- NULL
 for(i in 1:level){
 	m <- c(m, c(rep(i, participant.num)))
 }
-methods <- factor(x, as.character(1:level))
+methods <- factor(m, as.character(1:level))
 
 item.name <- str_sub(colnames(all.data[seq(from = 2, to = ncol(all.data), by = level)]
 ), start = 1, end = -4)
@@ -41,9 +42,9 @@ for(i in 1:item.num){
 
 	# ANOVA
 	# print(oneway.test(data~methods, var.equal=T)) # 等分散でないときも使えるやつ（var.equal=Fにすれば等分散でないANOVA）
-	print(summary(aov(data~methods))) # 等分散性を仮定したやつ
+	print(summary(aov(data~methods+participants))) # 等分散性を仮定したやつ
 
 	# 事後比較（ボンフェローニ補正によるt検定）
-	print(pairwise.t.test(data, methods, p.adjust.method="bonferroni"))
+	print(pairwise.t.test(data, methods, p.adjust.method="bonferroni", paired=T))
 	cat(sprintf('--------------------------------------------------\n'))
 }

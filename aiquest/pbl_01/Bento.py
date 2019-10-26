@@ -126,7 +126,7 @@ def main():
     p.plot()
     plt.show()
 
-    # 重回帰モデルt
+    # 重回帰モデル
     #linear = LinearRegression(n_jobs=-1)
     #linear.fit(train_data_X, train_data_y)
     #pred = linear.predict(train_data_X)

@@ -1,11 +1,9 @@
 import math
+import optuna
 import pandas as pd
 import numpy as np
 import lightgbm as lgbm
-
-import optuna
 from sklearn.model_selection import train_test_split
-
 
 def WMAE_score_func(y_true, y_pred):
     v = sum([1+abs(10000*y) for y in y_true])

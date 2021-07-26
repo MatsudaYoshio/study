@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Links</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+      crossorigin="anonymous"
+    />
+    <style type="text/css">
+      li {
+        padding: 2px;
+      }
+
+      .dropdown-divider {
+        margin: 0.4rem 0 0.15rem;
+      }
+
+      .link-table {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .dropdown {
+        margin-right: 20px;
+        margin-bottom: 20px;
+        width: calc(100% / 2 - 20px / 2);
+        height: 100px;
+      }
+
+      .dropdown:nth-child(2n) {
+        margin-right: 0;
+      }
+
+      .btn {
+        margin: 1px;
+      }
+
+      #edit-button {
+        background-color: plum;
+        position: fixed;
+        right: 50px;
+        bottom: 50px;
+        transition: 1s;
+        opacity: 0.7;
+        outline: none;
+        box-shadow: none;
+      }
+
+      #edit-button:hover {
+        opacity: 1;
+      }
+
+      .fade-alert-enter-from,
+      .fade-alert-leave-to {
+        opacity: 0;
+      }
+
+      .fade-alert-enter-active {
+        transition: opacity 0.3s ease-in;
+      }
+
+      .fade-alert-leave-active {
+        transition: opacity 0.5s ease-out;
+      }
+
+      .fade-alert-enter-to,
+      .fade-alert-leave-from {
+        opacity: 1;
+      }
+
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="p-3 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+          <h1 class="display-4 fw-bold">My Links</h1>
+          <p class="col-md-8 fs-4">This page allows you to quickly copy the NAME, URL of your favorite links.</p>
+        </div>
+      </div>
+
+      <transition name="fade-alert">
+        <div class="alert alert-info fw-bold fs-2 mx-2" role="alert" v-if="alertIsVisible" v-cloak>Updated the link data!</div>
+      </transition>
+
+      <div class="link-table">
+        <div v-for="dropdownItem in dropdownItems" class="dropdown">
+          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            >{{ dropdownItem.dropdownTitle }}</a
+          >
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <li v-for="(data, index) in dropdownItem.linkData" @click="$event.stopPropagation()">
+              <a class="btn btn-primary" :href="data.url" role="button" target="_blank">{{ data.name }}</a>
+              <button type="button" class="btn btn-success" :value="data.name" @click="copyToClipboard(data.name)">NAME</button>
+              <button type="button" class="btn btn-warning" :value="data.url" @click="copyToClipboard(data.url)">URL</button>
+              <div class="dropdown-divider" v-if="index != Object.keys(dropdownItem.linkData).length - 1"></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="updateIndexedDbWarningModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateIndexedDbWarningModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="text-white bg-danger modal-content">
+            <div class="modal-header">
+              <h5 id="updateIndexedDbWarningModalLabel" class="modal-title">Warning!</h5>
+            </div>
+            <div class="modal-body">Update your indexed DB from your html file?</div>
+            <div class="modal-footer">
+              <button type="button" id="NoButton" class="btn btn-dark" data-bs-dismiss="modal">No</button>
+              <button type="button" id="OkeyButton" class="btn text-danger btn-light" data-bs-dismiss="modal" @click="enableUpdateIndexedDb">Okey</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" id="edit-button" class="btn text-white">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+        <path
+          d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+        />
+        <path
+          fill-rule="evenodd"
+          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+        />
+      </svg>
+    </button>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://unpkg.com/vue@next"></script>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.0-beta-2/dexie.min.js"
+      integrity="sha512-A20qQ/PvLAi/+0D7U05bhIBk5D4zD7BIrT7M4zS4M/vz48MooIRq3PDFAHvqmFV73IAWG+8Y29AYtqU6hxeJJQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+      const databaseName = "linkDB";
+      const linkObjectStoreName = "links";
+    </script>
+
+    <script>
+      Vue.createApp({
+        data() {
+          return {
+            dropdownItems: [],
+            canUpdateIndexedDB: false,
+            alertIsVisible: false,
+          };
+        },
+        mounted() {
+          if (this.dropdownItems?.length) {
+            // このファイルに記述されているリンクデータに何かが入っていれば、ユーザの意思を確認して、Indexed DBを更新する
+            this.showModal();
+            this.waitCanUpdateIndexedDb().then(() => {
+              // ユーザがOKと答えたら
+              if (this.canUpdateIndexedDB) {
+                this.clearIndexedDb();
+                this.updateIndexedDb();
+              }
+            });
+          } else {
+            // このファイルに記述されているリンクデータがなければ、Indexed DBから読み込む
+            this.loadFromIndexedDb();
+          }
+        },
+        methods: {
+          copyToClipboard(text) {
+            // Create new element
+            let element = document.createElement("textarea");
+
+            // Set value (string to be copied)
+            element.value = text;
+
+            // Set non-editable to avoid focus and move outside of view
+            element.setAttribute("readonly", "");
+            element.style = { position: "absolute", left: "-9999px" };
+            document.body.appendChild(element);
+
+            // Select text inside element
+            element.select();
+
+            // Copy text to clipboard
+            document.execCommand("copy");
+
+            // Remove temporary element
+            document.body.removeChild(element);
+          },
+          async waitCanUpdateIndexedDb() {
+            // ユーザがボタンを押下するまで待つ
+            const awaitForClick = async (targets) => {
+              return new Promise((resolve) => {
+                const listener = resolve;
+                for (const target of targets) {
+                  target.addEventListener("click", listener, { once: true });
+                }
+              });
+            };
+
+            const buttons = [document.querySelector("#NoButton"), document.querySelector("#OkeyButton")];
+            const button = console.log("start awaitForClick");
+            await awaitForClick(buttons);
+            console.log("end awaitForClick");
+          },
+          loadFromIndexedDb() {
+            let openRequest = indexedDB.open(databaseName, 1);
+
+            // データベース更新が必要ならば
+            openRequest.onupgradeneeded = () => {
+              let db = openRequest.result;
+              if (!db.objectStoreNames.contains(linkObjectStoreName)) {
+                db.createObjectStore(linkObjectStoreName, { keyPath: "linkId", autoIncrement: true });
+              }
+            };
+
+            // データベースが開けなければ、エラーを出力
+            openRequest.onerror = () => console.error("Error", openResult.error);
+
+            // データベースが準備完了であれば
+            openRequest.onsuccess = () => {
+              let db = openRequest.result;
+
+              // Indexed DBから読み込む
+              let transaction = db.transaction(linkObjectStoreName, "readonly");
+              let links = transaction.objectStore(linkObjectStoreName);
+
+              let getRequest = links.getAll();
+              getRequest.onsuccess = () => (this.dropdownItems = getRequest.result);
+            };
+          },
+          clearIndexedDb() {
+            let openRequest = indexedDB.open(databaseName, 1);
+
+            // データベース更新が必要ならば
+            openRequest.onupgradeneeded = () => {
+              console.log("onupgradeneeded");
+              let db = openRequest.result;
+              if (!db.objectStoreNames.contains(linkObjectStoreName)) {
+                db.createObjectStore(linkObjectStoreName, { keyPath: "linkId", autoIncrement: true });
+              }
+            };
+
+            openRequest.onsuccess = () => {
+              console.log("onsuccess");
+              let db = openRequest.result;
+              let transaction = db.transaction(linkObjectStoreName, "readwrite");
+              let links = transaction.objectStore(linkObjectStoreName);
+              links.clear();
+              transaction.oncomplete = function () {
+                console.log("Complete clear");
+              };
+            };
+          },
+          updateIndexedDb() {
+            let openRequest = indexedDB.open(databaseName, 1);
+
+            openRequest.onupgradeneeded = () => {
+              let db = openRequest.result;
+              if (!db.objectStoreNames.contains(linkObjectStoreName)) {
+                db.createObjectStore(linkObjectStoreName, { keyPath: "linkId", autoIncrement: true });
+              }
+            };
+
+            openRequest.onsuccess = () => {
+              let db = openRequest.result;
+              let transaction = db.transaction(linkObjectStoreName, "readwrite");
+              let links = transaction.objectStore(linkObjectStoreName);
+
+              for (const item of this.dropdownItems) {
+                let addRequest = links.add(Dexie.deepClone(item));
+              }
+
+              // 更新が終わったら、アラートを表示する
+              transaction.oncomplete = () => {
+                this.toggleAlertIsVisible();
+                setTimeout(this.toggleAlertIsVisible, 3000);
+              };
+            };
+          },
+          toggleAlertIsVisible() {
+            this.alertIsVisible = !this.alertIsVisible;
+          },
+          enableUpdateIndexedDb() {
+            this.canUpdateIndexedDB = true;
+          },
+          showModal() {
+            const warningModal = document.getElementById("updateIndexedDbWarningModal");
+            const modal = new bootstrap.Modal(warningModal, { backdrop: "static", keyboard: false });
+            modal.show();
+          },
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
+
+<!-- 
+  <dropdownItems examples>
+  dropdownItems: [
+    {
+      dropdownTitle: "アルゴリズム勉強用資料",
+      linkData: [
+        {
+          name: "Java でアッカーマン関数を実装しよう - にょきにょきブログ",
+          url: "https://aoking.hatenablog.jp/entry/2015/06/30/162537",
+        },
+        {
+          name: "アルゴリズムの「計算量理論」の講義ノートPDF。複雑性クラスP/NPの分類や「計算可能性」の理論を，独学で学ぶ教科書",
+          url: "https://language-and-engineering.hatenablog.jp/entry/20140613/AlgorithmComputationalComplexityTheoryPDFLectureNotes",
+        },
+        {
+          name: "遺伝的アルゴリズム入門｜楽しく学べる動画とスライド-Mayonez",
+          url: "https://mayonez.jp/tutorial",
+        },
+      ],
+    },
+    {
+      dropdownTitle: "ニュースサイト",
+      linkData: [
+        {
+          name: "IT総合情報ポータル「ITmedia」",
+          url: "https://www.itmedia.co.jp/",
+        },
+        {
+          name: "Gigazine",
+          url: "https://gigazine.net/",
+        },
+      ],
+    },
+    {
+      dropdownTitle: "自己学習用のGoogle Docs",
+      linkData: [
+        {
+          name: "仕事が速い人はどんなメールを書いているのか",
+          url: "#",
+        },
+        {
+          name: "食べれば食べるほど若くなる法―――「肌」「髪」「体」がよみがえる！",
+          url: "#",
+        },
+      ],
+    },
+  ]
+-->

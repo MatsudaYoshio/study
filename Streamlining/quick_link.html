@@ -113,7 +113,7 @@
                 <a class="btn btn-primary d-flex align-items-center" :href="data.url" role="button" target="_blank">{{ data.name }}</a>
                 <button type="button" class="btn btn-success" :value="data.name" @click="copyToClipboard(data.name)">NAME</button>
                 <button type="button" class="btn btn-warning" :value="data.url" @click="copyToClipboard(data.url)">URL</button>
-                <button v-if="isEditMode" type="button" id="edit-button" class="btn text-white" style="background-color: plum">
+                <button v-if="isEditMode" type="button" id="edit-button" class="btn text-white" style="background-color: plum" @click="setEditInfo(dropdownItem.dropdownTitle, data); showEditModal()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                     <path
                       d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
@@ -137,6 +137,32 @@
               <div class="dropdown-divider" v-if="index != Object.keys(dropdownItem.linkData).length - 1"></div>
             </li>
           </ul>
+        </div>
+      </div>
+
+      <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true" @click="$event.stopPropagation()">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editModalLabel">Edit "{{ editInfo.title }}"</h5>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label for="editNameInput" class="form-label">NAME</label>
+                  <input type="text" class="form-control" id="editNameInput" v-model="editInfo.name">
+                </div>
+                <div class="mb-3">
+                  <label for="editUrlInput" class="form-label">URL</label>
+                  <input type="url" class="form-control" id="editUrlInput" v-model="editInfo.url">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancle</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -225,12 +251,13 @@
             canUpdateIndexedDB: false,
             alertIsVisible: false,
             isEditMode: false,
+            editInfo: { title: "", name: "", url: "" }
           };
         },
         mounted() {
           if (this.dropdownItems?.length) {
             // このファイルに記述されているリンクデータに何かが入っていれば、ユーザの意思を確認して、Indexed DBを更新する
-            this.showModal();
+            this.showWarningModal();
             this.waitCanUpdateIndexedDb().then(() => {
               // ユーザがOKと答えたら
               if (this.canUpdateIndexedDB) {
@@ -356,9 +383,14 @@
               };
             };
           },
-          showModal() {
+          showWarningModal() {
             const warningModal = document.getElementById("updateIndexedDbWarningModal");
             const modal = new bootstrap.Modal(warningModal, { backdrop: "static", keyboard: false });
+            modal.show();
+          },
+          showEditModal() {
+            const editModal = document.getElementById("editModal");
+            const modal = new bootstrap.Modal(editModal, { backdrop: "true", keyboard: true });
             modal.show();
           },
           toggleAlertIsVisible() {
@@ -370,6 +402,11 @@
           toggleEditMode() {
             this.isEditMode = !this.isEditMode;
           },
+          setEditInfo(title, linkData) {
+            this.editInfo.title = title;
+            this.editInfo.name = linkData.name;
+            this.editInfo.url = linkData.url;
+          }
         },
       }).mount("#app");
     </script>

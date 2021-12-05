@@ -103,7 +103,7 @@
       </transition>
 
       <div class="link-table" v-cloak>
-        <div v-for="dropdownItem in dropdownItems" class="dropdown">
+        <div v-for="dropdownItem in viewingItems" class="dropdown">
           <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             >{{ dropdownItem.dropdownTitle }}</a
           >
@@ -113,7 +113,14 @@
                 <a class="btn btn-primary d-flex align-items-center" :href="data.url" role="button" target="_blank">{{ data.name }}</a>
                 <button type="button" class="btn btn-success" :value="data.name" @click="copyToClipboard(data.name)">NAME</button>
                 <button type="button" class="btn btn-warning" :value="data.url" @click="copyToClipboard(data.url)">URL</button>
-                <button v-if="isEditMode" type="button" id="edit-button" class="btn text-white" style="background-color: plum" @click="setEditInfo(dropdownItem.dropdownTitle, data); showEditModal()">
+                <button
+                  v-if="isEditMode"
+                  type="button"
+                  id="edit-button"
+                  class="btn text-white"
+                  style="background-color: plum"
+                  @click="setOldEditInfo(dropdownItem.dropdownTitle, data); showEditModal()"
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                     <path
                       d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
@@ -124,7 +131,7 @@
                     />
                   </svg>
                 </button>
-                <button v-if="isEditMode" type="button" id="delete-button" class="btn btn-danger text-white">
+                <button v-if="isEditMode" type="button" id="delete-button" class="btn btn-danger text-white" @click="deleteItem(dropdownItem.dropdownTitle, data)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                     <path
@@ -150,17 +157,17 @@
               <form>
                 <div class="mb-3">
                   <label for="editNameInput" class="form-label">NAME</label>
-                  <input type="text" class="form-control" id="editNameInput" v-model="editInfo.name">
+                  <input type="text" class="form-control" id="editNameInput" v-model="editInfo.name" />
                 </div>
                 <div class="mb-3">
                   <label for="editUrlInput" class="form-label">URL</label>
-                  <input type="url" class="form-control" id="editUrlInput" v-model="editInfo.url">
+                  <input type="url" class="form-control" id="editUrlInput" v-model="editInfo.url" />
                 </div>
               </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancle</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="saveTemporaryChanges(editInfo)">Save changes</button>
             </div>
           </div>
         </div>
@@ -251,7 +258,9 @@
             canUpdateIndexedDB: false,
             alertIsVisible: false,
             isEditMode: false,
-            editInfo: { title: "", name: "", url: "" }
+            oldEditInfo: { title: "", name: "", url: "" },
+            editInfo: { title: "", name: "", url: "" },
+            temporaryItems: [],
           };
         },
         mounted() {
@@ -400,13 +409,43 @@
             this.canUpdateIndexedDB = true;
           },
           toggleEditMode() {
-            this.isEditMode = !this.isEditMode;
+            if (this.isEditMode) {
+              // ...
+            } else {
+              this.isEditMode = true;
+              this.temporaryItems = JSON.parse(JSON.stringify(this.dropdownItems));
+            }
           },
-          setEditInfo(title, linkData) {
+          setOldEditInfo(title, linkData) {
             this.editInfo.title = title;
             this.editInfo.name = linkData.name;
             this.editInfo.url = linkData.url;
-          }
+
+            this.oldEditInfo = Object.assign({}, this.editInfo);
+          },
+          deleteItem(title, linkData) {
+            const targetTitleIndex = this.temporaryItems.findIndex((item) => item.dropdownTitle === title);
+            const targetDataIndex = this.temporaryItems[targetTitleIndex].linkData.findIndex((data) => data.name === linkData.name && data.url === linkData.url);
+            this.temporaryItems[targetTitleIndex].linkData.splice(targetDataIndex, 1);
+            if (!this.temporaryItems[targetTitleIndex].linkData.length) {
+              this.temporaryItems.splice(targetTitleIndex, 1);
+            }
+          },
+          saveTemporaryChanges(editInfo) {
+            const { title, ...data } = editInfo;
+            const targetTitleIndex = this.temporaryItems.findIndex((item) => item.dropdownTitle === title);
+            const targetDataIndex = this.temporaryItems[targetTitleIndex].linkData.findIndex((data) => data.name === this.oldEditInfo.name && data.url === this.oldEditInfo.url);
+
+            this.temporaryItems[targetTitleIndex].linkData[targetDataIndex] = data;
+
+            console.log(this.oldEditInfo);
+            console.log(this.editInfo);
+          },
+        },
+        computed: {
+          viewingItems: function () {
+            return this.isEditMode ? this.temporaryItems : this.dropdownItems;
+          },
         },
       }).mount("#app");
     </script>

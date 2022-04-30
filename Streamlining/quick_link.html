@@ -188,9 +188,24 @@
         </div>
       </div>
 
+      <div id="saveWarningModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="saveWarningModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="text-white bg-danger modal-content">
+            <div class="modal-header">
+              <h5 id="saveWarningModalLabel" class="modal-title">Warning!</h5>
+            </div>
+            <div class="modal-body">Want to save your changes?</div>
+            <div class="modal-footer">
+              <button type="button" id="NoButton" class="btn btn-dark" data-bs-dismiss="modal">No</button>
+              <button type="button" id="OkeyButton" class="btn text-danger btn-light" data-bs-dismiss="modal" @click="saveProductionChanges">Okey</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div id="edit-mode-button-list" class="btn-toolbar" role="toolbar">
         <div v-if="isEditMode" class="btn-group pt-2 me-2" role="group" v-cloak>
-          <button type="button" id="cancel-button" class="btn btn-danger text-white">
+          <button type="button" id="cancel-button" class="btn btn-danger text-white" @click="toggleEditMode">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
               <path
                 d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"
@@ -199,7 +214,7 @@
           </button>
         </div>
         <div v-if="isEditMode" class="btn-group pt-2 me-4" role="group" v-cloak>
-          <button type="button" id="save-button" class="btn btn-info text-white">
+          <button type="button" id="save-button" class="btn btn-info text-white" @click="showSaveWarningModal">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
               <path
                 d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"
@@ -397,6 +412,11 @@
             const modal = new bootstrap.Modal(warningModal, { backdrop: "static", keyboard: false });
             modal.show();
           },
+          showSaveWarningModal() {
+            const warningModal = document.getElementById("saveWarningModal");
+            const modal = new bootstrap.Modal(warningModal, { backdrop: "static", keyboard: false });
+            modal.show();
+          },
           showEditModal() {
             const editModal = document.getElementById("editModal");
             const modal = new bootstrap.Modal(editModal, { backdrop: "true", keyboard: true });
@@ -409,12 +429,8 @@
             this.canUpdateIndexedDB = true;
           },
           toggleEditMode() {
-            if (this.isEditMode) {
-              // ...
-            } else {
-              this.isEditMode = true;
-              this.temporaryItems = JSON.parse(JSON.stringify(this.dropdownItems));
-            }
+            this.temporaryItems = JSON.parse(JSON.stringify(this.dropdownItems));
+            this.isEditMode = !this.isEditMode;
           },
           setOldEditInfo(title, linkData) {
             this.editInfo.title = title;
@@ -437,9 +453,18 @@
             const targetDataIndex = this.temporaryItems[targetTitleIndex].linkData.findIndex((data) => data.name === this.oldEditInfo.name && data.url === this.oldEditInfo.url);
 
             this.temporaryItems[targetTitleIndex].linkData[targetDataIndex] = data;
-
-            console.log(this.oldEditInfo);
-            console.log(this.editInfo);
+          },
+          saveProductionChanges() {
+            this.dropdownItems = this.temporaryItems;
+            // ユーザの意思を確認して、Indexed DBを更新する
+            this.showWarningModal();
+            this.waitCanUpdateIndexedDb().then(() => {
+              // ユーザがOKと答えたら
+              if (this.canUpdateIndexedDB) {
+                this.clearIndexedDb();
+                this.updateIndexedDb();
+              }
+            });
           },
         },
         computed: {

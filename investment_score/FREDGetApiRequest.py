@@ -1,4 +1,4 @@
-import requests
+import aiohttp
 
 API_KEY = ''
 FRED_API_URL = 'https://api.stlouisfed.org/fred/series/observations'
@@ -9,5 +9,10 @@ class FREDGetApiRequest(object):
         self.payload = payload.copy()
         self.payload['api_key'] = API_KEY
 
-    def excute(self):
-        return requests.get(FRED_API_URL, self.payload)
+    async def execute(self, session: aiohttp.ClientSession):
+        async with session.get(FRED_API_URL, params=self.payload) as response:
+            return await response.json()
+    
+    async def execute_standalone(self):
+        async with aiohttp.ClientSession() as session:
+            return await self.execute(session)

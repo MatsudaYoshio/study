@@ -1,4 +1,6 @@
-from FREDGetApiRequest import FREDGetApiRequest, requests
+import aiohttp
+from FREDGetApiRequest import FREDGetApiRequest
+
 
 class EconomicIndicator(object):
     def __init__(self, series_id):
@@ -8,22 +10,32 @@ class EconomicIndicator(object):
             'series_id': series_id,
             'sort_order': 'desc'
         }
-    
-    def get_value(self, units='lin'):
+
+    async def get_value(self, units='lin', session: aiohttp.ClientSession = None):
         payload = self.base_payload.copy()
         payload['units'] = units
 
-        api_response = FREDGetApiRequest(payload).excute()
-
-        value = None
-        if api_response.status_code == requests.codes.ok:
-            if api_response.json()['observations']:
-                value = api_response.json()['observations'][0]['value']
+        request = FREDGetApiRequest(payload)
+        
+        try:
+            if session:
+                data = await request.execute(session)
+            else:
+                data = await request.execute_standalone()
+            
+            if data.get('observations'):
+                value = data['observations'][0]['value']
+                return float(value)
             else:
                 print('Failed to get value.')
-        elif api_response.status_code == requests.codes.too_many_requests:
-            print('Too many requests.')
-        else:
-            print('Failed to get response.')
-
-        return float(value)
+                return None
+                
+        except aiohttp.ClientResponseError as e:
+            if e.status == 429:
+                print('Too many requests.')
+            else:
+                print(f'Failed to get response: {e.status}')
+            return None
+        except Exception as e:
+            print(f'Error occurred: {e}')
+            return None
